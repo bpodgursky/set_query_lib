@@ -5,11 +5,15 @@ public class Pair<K, V> {
   protected final K first;
   protected final V second;
  
-  public Pair(K k,V v) {  
+  private Pair(K k,V v) {
   	if(k == null || v == null) throw new IllegalArgumentException("null field");
   	
     first = k;
     second = v;   
+  }
+
+  public static <K, V> Pair<K, V> of(K k, V v){
+    return new Pair<K, V>(k, v);
   }
  
   public K first() {

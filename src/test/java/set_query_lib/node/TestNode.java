@@ -1,6 +1,5 @@
 package set_query_lib.node;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import set_query_lib.KeyMapper;
 import set_query_lib.Pair;
@@ -12,6 +11,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import static junit.framework.Assert.*;
+
 
 public class TestNode extends SetQueryLibTestCase {
 
@@ -33,19 +35,19 @@ public class TestNode extends SetQueryLibTestCase {
     for(Set<Integer> keys: data){
       qnode.add(mapper.getKeys(keys));
     }
-    Assert.assertEquals(5, qnode.getDistinctEntries());
+    assertEquals(5, qnode.getDistinctEntries());
 
     RootNode<DataNode> dnode = new RootNode<DataNode>(new DataAddStrat());
     for(Set<Integer> keys: data){
       dnode.add(mapper.getKeys(keys));
     }
-    Assert.assertEquals(5, dnode.getDistinctEntries());
+    assertEquals(5, dnode.getDistinctEntries());
 
     RootNode<SupersetNode> snode = new RootNode<SupersetNode>(new SupersetAddStrat());
     for(Set<Integer> keys: data){
       snode.add(mapper.getKeys(keys));
     }
-    Assert.assertEquals(5, snode.getDistinctEntries());
+    assertEquals(5, snode.getDistinctEntries());
   }
 
   @Test
@@ -56,11 +58,11 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getQueries(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 15), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20, 30), 1l)));
-    Assert.assertEquals(4, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 0l)));
+    assertTrue(counts.contains(Pair.of(set(10), 0l)));
+    assertTrue(counts.contains(Pair.of(set(10, 15), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20, 30), 1l)));
+    assertEquals(4, counts.size());
   }
 
   @Test
@@ -71,11 +73,11 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getData(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 15), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20, 30), 1l)));
-    Assert.assertEquals(4, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10, 15), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20, 30), 1l)));
+    assertEquals(4, counts.size());
   }
 
   @Test
@@ -86,10 +88,10 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getData(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20, 30), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20), 2l)));
-    Assert.assertEquals(3, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20, 30), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20), 2l)));
+    assertEquals(3, counts.size());
   }
 
   @Test
@@ -100,10 +102,10 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getQueries(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20, 30), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20), 1l)));
-    Assert.assertEquals(3, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 0l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20, 30), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20), 1l)));
+    assertEquals(3, counts.size());
   }
 
   @Test
@@ -114,11 +116,11 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getQueries(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 30), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 40), 1l)));
-    Assert.assertEquals(4, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 0l)));
+    assertTrue(counts.contains(Pair.of(set(10), 0l)));
+    assertTrue(counts.contains(Pair.of(set(10, 30), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 40), 1l)));
+    assertEquals(4, counts.size());
   }
 
   @Test
@@ -129,11 +131,11 @@ public class TestNode extends SetQueryLibTestCase {
 
     List<Pair<Set<Integer>, Long>> counts = getData(data);
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 30), 1l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 40), 1l)));
-    Assert.assertEquals(4, counts.size());
+    assertTrue(counts.contains(Pair.of(set(), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10, 30), 1l)));
+    assertTrue(counts.contains(Pair.of(set(10, 40), 1l)));
+    assertEquals(4, counts.size());
   }
 
 

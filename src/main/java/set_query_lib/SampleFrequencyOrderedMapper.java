@@ -1,12 +1,14 @@
 package set_query_lib;
 
+import com.google.common.collect.Maps;
+
 import java.util.*;
 
 public class SampleFrequencyOrderedMapper<K> extends KeyMapper<K> {
   public static final int DEFAULT_SAMPLE_SIZE = 1000;
 
-  private final Map<K, Integer> keyToIndex = new HashMap<K, Integer>();
-  private final Map<Integer, K> indexToK = new HashMap<Integer, K>();
+  private final Map<K, Integer> keyToIndex = Maps.newHashMap();
+  private final Map<Integer, K> indexToK = Maps.newHashMap();
 
   private int maxIndex = 0;
   private int sampleSize;
@@ -51,9 +53,9 @@ public class SampleFrequencyOrderedMapper<K> extends KeyMapper<K> {
   public void offerSample(List<Set<K>> samples) {
 
     int keys = 0;
-    Map<K, Integer> naiveIndex = new HashMap<K, Integer>();
-    Map<Integer, K> naiveIndexInv = new HashMap<Integer, K>();
-    Map<Integer, Integer> keyToCount = new HashMap<Integer, Integer>();
+    Map<K, Integer> naiveIndex = Maps.newHashMap();
+    Map<Integer, K> naiveIndexInv = Maps.newHashMap();
+    Map<Integer, Integer> keyToCount = Maps.newHashMap();
     for(Set<K> sample: samples){
       for(K value: sample){
         if(!naiveIndex.containsKey(value)){
@@ -67,7 +69,7 @@ public class SampleFrequencyOrderedMapper<K> extends KeyMapper<K> {
       }
     }
 
-    TreeMap<Integer, Integer> sorted = new TreeMap<Integer, Integer>(new ValueComparator<Integer, Integer>(keyToCount));
+    TreeMap<Integer, Integer> sorted = Maps.newTreeMap(new ValueComparator<Integer, Integer>(keyToCount));
     sorted.putAll(keyToCount);
 
     for(Integer key: sorted.descendingKeySet()){

@@ -103,7 +103,7 @@ public class BatchSubsetCountQuerier<T, K> {
           items.add(mapper.getValue(value));
         }
 
-        collector.collect(new Pair<Set<K>, Long>(items, cumulativeCount));
+        collector.collect(Pair.of(items, cumulativeCount));
       }
 
       for (final QueryNode sn : currentNode.getChildren()) {

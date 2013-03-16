@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import static junit.framework.Assert.*;
+
 public class TestBatchSubsetQuerier extends QueryTestCase {
 
   @Test
@@ -26,14 +28,14 @@ public class TestBatchSubsetQuerier extends QueryTestCase {
     querier.query(queries.iterator());
     querier.flushQueries();
 
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(30), 12l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 30, 40), 4l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(20, 30, 40), 4l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(30, 40, 50, 60), 0l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(20, 30), 8l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(30, 50), 2l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10), 11l)));
-    Assert.assertTrue(counts.contains(new Pair<Set<Integer>, Long>(set(10, 20), 4l)));
+    assertTrue(counts.contains(Pair.of(set(30), 12l)));
+    assertTrue(counts.contains(Pair.of(set(10, 30, 40), 4l)));
+    assertTrue(counts.contains(Pair.of(set(20, 30, 40), 4l)));
+    assertTrue(counts.contains(Pair.of(set(30, 40, 50, 60), 0l)));
+    assertTrue(counts.contains(Pair.of(set(20, 30), 8l)));
+    assertTrue(counts.contains(Pair.of(set(30, 50), 2l)));
+    assertTrue(counts.contains(Pair.of(set(10), 11l)));
+    assertTrue(counts.contains(Pair.of(set(10, 20), 4l)));
   }
 
 }
