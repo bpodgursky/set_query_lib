@@ -1,5 +1,6 @@
 package set_query_lib.runners;
 
+import com.google.common.collect.Lists;
 import set_query_lib.IntBitSet;
 import set_query_lib.KeyMapper;
 import set_query_lib.RecordExtractor;
@@ -14,8 +15,6 @@ public class SupersetQuerier<T, K> {
   private final RootNode<SupersetNode> data;
   private final KeyMapper<K> mapper;
 
-  private static final int SAMPLE_QUERIES = 1000;
-
   public SupersetQuerier(Iterator<T> values,
                          RecordExtractor<T, K> extractor,
                          KeyMapper<K> mapper) {
@@ -24,7 +23,7 @@ public class SupersetQuerier<T, K> {
     this.data = new RootNode<SupersetNode>(new SupersetAddStrat());
 
     List<Set<K>> samples = new ArrayList<Set<K>>();
-    while(samples.size() < SAMPLE_QUERIES && values.hasNext()){
+    while(samples.size() < mapper.getSampleSize() && values.hasNext()){
       samples.add(extractor.getKeys(values.next()));
     }
 
@@ -74,7 +73,7 @@ public class SupersetQuerier<T, K> {
     // If this node is an actual subset (rather than just an internal node of the trie),
     // add it as a match to the query.
     if(curNode.isReal()){
-      List<Integer> subsetMatch = new ArrayList<Integer>(pathFromRoot);
+      List<Integer> subsetMatch = Lists.newArrayList(pathFromRoot);
       subsetMatches.add(subsetMatch);
 
       if (subsetMatches.size() >= maxMatches) {

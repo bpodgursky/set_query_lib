@@ -75,7 +75,7 @@ public class BatchSubsetCountQuerier<T, K> {
   protected void supersetQuery(QueryNode currentNode,
                                int[] incrementalId,
                                int position,
-                               LinkedList<DataNode> frontier,
+                               List<DataNode> frontier,
                                ObjectCollector<Pair<Set<K>, Long>> collector) throws IOException {
 
     int[] nodeData = currentNode.getData();
@@ -103,7 +103,7 @@ public class BatchSubsetCountQuerier<T, K> {
         collector.collect(Pair.of(items, cumulativeCount));
       }
 
-      for (final QueryNode sn : currentNode.getChildren()) {
+      for (QueryNode sn : currentNode.getChildren()) {
         executor.call(sn, idCopy, frontierHere, collector);
       }
     }
@@ -116,7 +116,7 @@ public class BatchSubsetCountQuerier<T, K> {
   /**
    * Get all the nodes at or below nodes on the current list, which include toFind
    */
-  private static LinkedList<DataNode> getFrontier(LinkedList<DataNode> current, int toFind) {
+  private static LinkedList<DataNode> getFrontier(List<DataNode> current, int toFind) {
 
     Queue<DataNode> toExplore = new LinkedList<DataNode>();
     LinkedList<DataNode> nextFrontier = new LinkedList<DataNode>();
