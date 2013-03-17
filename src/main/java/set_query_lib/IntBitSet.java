@@ -8,11 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Hold a set of segments as an array of ints
+ * Compact representation of a sparse set of integers
  *
- * @author ben
  */
-
 public class IntBitSet implements Comparable<IntBitSet>{
 
   private final int[] contents;
