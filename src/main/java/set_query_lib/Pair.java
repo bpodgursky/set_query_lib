@@ -2,8 +2,8 @@ package set_query_lib;
 
 public class Pair<K, V> {
 	 
-  protected final K first;
-  protected final V second;
+  private final K first;
+  private final V second;
  
   private Pair(K k,V v) {
   	if(k == null || v == null) throw new IllegalArgumentException("null field");
