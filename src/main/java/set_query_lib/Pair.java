@@ -6,8 +6,6 @@ public class Pair<K, V> {
   private final V second;
  
   private Pair(K k,V v) {
-  	if(k == null || v == null) throw new IllegalArgumentException("null field");
-  	
     first = k;
     second = v;   
   }
