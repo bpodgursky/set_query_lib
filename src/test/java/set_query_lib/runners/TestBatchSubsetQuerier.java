@@ -1,6 +1,5 @@
 package set_query_lib.runners;
 
-import junit.framework.Assert;
 import org.junit.Test;
 import set_query_lib.Pair;
 import set_query_lib.SampleFrequencyOrderedMapper;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertTrue;
 
 public class TestBatchSubsetQuerier extends QueryTestCase {
 

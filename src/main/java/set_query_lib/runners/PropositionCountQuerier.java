@@ -1,5 +1,6 @@
 package set_query_lib.runners;
 
+import jbool_expressions.And;
 import jbool_expressions.ExprUtil;
 import jbool_expressions.Literal;
 import jbool_expressions.rules.Assign;
@@ -41,6 +42,19 @@ public class PropositionCountQuerier<T, K> {
     while(values.hasNext()){
       dataRoot.add(mapper.getKeys(extractor.getKeys(values.next())));
     }
+  }
+
+  public double findFractionMatch(Expression<K> prop){
+    return findFractionMatch(Literal.<K>getTrue(), prop);
+  }
+
+  //  of all people who match "expr", what percent match "prop"
+  public double findFractionMatch(Expression<K> filter, Expression<K> prop){
+    long totalMatch = countMatchingRecords(filter);
+    Expression<K> withProp = And.of(filter, prop);
+    long totalWithProp = countMatchingRecords(withProp);
+
+    return ((double) (totalWithProp)) / ((double) totalMatch);
   }
 
   public long countMatchingRecords(Expression<K> e){
@@ -91,16 +105,15 @@ public class PropositionCountQuerier<T, K> {
     if(!assignMap.isEmpty()){
       expression = RuleSet.applyAll(expression, allRules);
       assignMap.clear();
+    }
 
-      //  expression cannot resolve true, fail
-      if(expression.equals(Literal.getFalse())){
-        return 0;
-      }
-
-      //  everything below here is good to go
-      else if(expression.equals(Literal.getTrue())){
-        return node.getCumulativeBelow();
-      }
+    //  expression cannot resolve true, fail
+    if(expression.equals(Literal.getFalse())){
+      return 0;
+    }
+    //  everything below here is good to go
+    else if(expression.equals(Literal.getTrue())){
+      return node.getCumulativeBelow();
     }
 
     //  if we get here, the expression should be resolved one way or another

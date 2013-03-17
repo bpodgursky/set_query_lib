@@ -53,4 +53,17 @@ public class TestPropositionCountQuerier extends QueryTestCase {
     assertEquals(6l, querier.countMatchingRecords(expr4));
   }
 
+  @Test
+  public void testFrequencies(){
+
+    PropositionCountQuerier<Set<Integer>, Integer> querier = new PropositionCountQuerier<Set<Integer>, Integer>(
+        data.iterator(),
+        new IdentityExtractor<Integer>(),
+        new SampleFrequencyOrderedMapper<Integer>());
+
+    assertEquals(.5, querier.findFractionMatch(And.of(Variable.of(20), Not.of(Variable.of(10))), Variable.of(40)), .0000001);
+    assertEquals(((double)4)/((double)17),
+        querier.findFractionMatch(And.of(Or.of(Variable.of(10), Variable.of(20)), Not.of(Variable.of(40)))),
+        .000001);
+  }
 }
