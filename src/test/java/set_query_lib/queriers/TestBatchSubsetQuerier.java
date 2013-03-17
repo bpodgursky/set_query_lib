@@ -1,4 +1,4 @@
-package set_query_lib.runners;
+package set_query_lib.queriers;
 
 import org.junit.Test;
 import set_query_lib.Pair;

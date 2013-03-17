@@ -1,4 +1,4 @@
-package set_query_lib.runners;
+package set_query_lib.queriers;
 
 import set_query_lib.*;
 import set_query_lib.collector.MeasuredCollector;

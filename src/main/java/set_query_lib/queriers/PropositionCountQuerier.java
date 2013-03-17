@@ -1,4 +1,4 @@
-package set_query_lib.runners;
+package set_query_lib.queriers;
 
 import jbool_expressions.And;
 import jbool_expressions.ExprUtil;

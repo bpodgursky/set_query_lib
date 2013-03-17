@@ -1,4 +1,4 @@
-package set_query_lib.runners;
+package set_query_lib.queriers;
 
 import java.io.IOException;
 import java.util.*;
