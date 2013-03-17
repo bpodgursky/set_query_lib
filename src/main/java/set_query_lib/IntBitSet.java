@@ -316,11 +316,6 @@ public class IntBitSet implements Comparable<IntBitSet>{
     return contents.length == 0;
   }
 
-  /**
-   * See if the segment is present.  Binary search, so log(n) time;
-   * if clusters only have around 20 segs on average, this is a fairly trivial
-   * number of comparisons
-   */
   public final boolean isSet(int searchTarget) {
     int last;
     int middle;
