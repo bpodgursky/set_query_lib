@@ -17,15 +17,14 @@ public class TestBatchSubsetQuerier extends QueryTestCase {
   @Test
   public void testSubsetQuerier() throws IOException, InterruptedException {
 
-    final List<Pair<Set<Integer>, Long>> counts = new ArrayList<Pair<Set<Integer>, Long>>();
+    List<Pair<Set<Integer>, Long>> counts = new ArrayList<Pair<Set<Integer>, Long>>();
 
     BatchSubsetCountQuerier<Set<Integer>, Integer> querier = BatchSubsetCountQuerier.create(data.iterator(),
         new SampleFrequencyOrderedMapper<Integer>(),
-        new ThreadPoolQueryExecutor<Set<Integer>, Integer>(5),
-        new CollectionCollector<Pair<Set<Integer>, Long>>(counts));
+        new ThreadPoolQueryExecutor<Set<Integer>, Integer>(5));
 
     querier.query(queries.iterator());
-    querier.flushQueries();
+    querier.flushQueries(new CollectionCollector<Pair<Set<Integer>, Long>>(counts));
 
     assertTrue(counts.contains(Pair.of(set(30), 12l)));
     assertTrue(counts.contains(Pair.of(set(10, 30, 40), 4l)));

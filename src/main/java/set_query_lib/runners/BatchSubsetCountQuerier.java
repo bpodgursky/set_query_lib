@@ -15,20 +15,17 @@ public class BatchSubsetCountQuerier<T, K> {
   private final RootNode<QueryNode> queryRoot;
 
   private final KeyMapper<K> mapper;
-  private final ObjectCollector<Pair<Set<K>, Long>> output;
   private final SubsetQueryExecutor<T, K> executor;
 
   private BatchSubsetCountQuerier(Iterator<T> values,
                                   RecordExtractor<T, K> extractor,
                                   KeyMapper<K> mapper,
-                                  SubsetQueryExecutor<T, K> executor,
-                                  ObjectCollector<Pair<Set<K>, Long>> output) {
+                                  SubsetQueryExecutor<T, K> executor) {
 
     this.dataRoot = new RootNode<DataNode>(new DataAddStrat());
     this.queryRoot = new RootNode<QueryNode>(new QueryAddStrat());
 
     this.mapper = mapper;
-    this.output = output;
     this.executor = executor;
 
     List<Set<K>> samples = new ArrayList<Set<K>>();
@@ -57,7 +54,7 @@ public class BatchSubsetCountQuerier<T, K> {
     }
   }
 
-  public synchronized void flushQueries() throws IOException, InterruptedException {
+  public synchronized void flushQueries(ObjectCollector<Pair<Set<K>, Long>> output) throws IOException, InterruptedException {
     MeasuredCollector<K> collector = new MeasuredCollector<K>(queryRoot.getDistinctEntries(), output);
     this.executor.setQuerier(this);
     for (final QueryNode child : queryRoot.getRoot().getChildren()) {
@@ -201,35 +198,30 @@ public class BatchSubsetCountQuerier<T, K> {
 
   public static <T, K> BatchSubsetCountQuerier create(Iterator<T> values,
                                                       RecordExtractor<T, K> extractor,
-                                                      SubsetQueryExecutor<T, K> executor,
-                                                      ObjectCollector<Pair<Set<K>, Long>> output) {
-    return new BatchSubsetCountQuerier<T, K>(values, extractor, new SampleFrequencyOrderedMapper<K>(), executor, output);
+                                                      SubsetQueryExecutor<T, K> executor) {
+    return new BatchSubsetCountQuerier<T, K>(values, extractor, new SampleFrequencyOrderedMapper<K>(), executor);
+  }
+
+  public static <K> BatchSubsetCountQuerier<Set<K>, K> create(Iterator<Set<K>> values) {
+    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), new SampleFrequencyOrderedMapper<K>(), new SimpleSubsetExecutor<Set<K>, K>());
   }
 
   public static <K> BatchSubsetCountQuerier<Set<K>, K> create(Iterator<Set<K>> values,
-                                                              ObjectCollector<Pair<Set<K>, Long>> output) {
-    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), new SampleFrequencyOrderedMapper<K>(), new SimpleSubsetExecutor<Set<K>, K>(), output);
-  }
-
-  public static <K> BatchSubsetCountQuerier<Set<K>, K> create(Iterator<Set<K>> values,
-                                                              SubsetQueryExecutor<Set<K>, K> executor,
-                                                              ObjectCollector<Pair<Set<K>, Long>> output) {
-    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), new SampleFrequencyOrderedMapper<K>(), executor, output);
+                                                              SubsetQueryExecutor<Set<K>, K> executor) {
+    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), new SampleFrequencyOrderedMapper<K>(), executor);
   }
 
   public static <T, K> BatchSubsetCountQuerier create(Iterator<T> values,
                                                       RecordExtractor<T, K> extractor,
                                                       KeyMapper<K> mapper,
-                                                      SubsetQueryExecutor<T, K> executor,
-                                                      ObjectCollector<Pair<Set<K>, Long>> output) {
-    return new BatchSubsetCountQuerier<T, K>(values, extractor, mapper, executor, output);
+                                                      SubsetQueryExecutor<T, K> executor) {
+    return new BatchSubsetCountQuerier<T, K>(values, extractor, mapper, executor);
   }
 
   public static <K> BatchSubsetCountQuerier<Set<K>, K> create(Iterator<Set<K>> values,
                                                               KeyMapper<K> mapper,
-                                                              SubsetQueryExecutor<Set<K>, K> executor,
-                                                              ObjectCollector<Pair<Set<K>, Long>> output) {
-    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), mapper, executor, output);
+                                                              SubsetQueryExecutor<Set<K>, K> executor) {
+    return new BatchSubsetCountQuerier<Set<K>, K>(values, new IdentityExtractor<K>(), mapper, executor);
   }
 
 }
