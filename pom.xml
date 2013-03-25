@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -12,7 +11,7 @@
   <artifactId>set_query_lib</artifactId>
   <packaging>jar</packaging>
 
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>set_query_lib</name>
 
   <description>set_query_lib contains space-efficient data structures for quickly counting records which share common
@@ -32,6 +31,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:bpodgursky/set_query_lib.git</developerConnection>
     <url>https://github.com/bpodgursky/set_query_lib</url>
+    <tag>set_query_lib-1.0</tag>
   </scm>
 
   <developers>
