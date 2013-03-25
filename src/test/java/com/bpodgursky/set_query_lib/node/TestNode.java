@@ -33,19 +33,19 @@ public class TestNode extends SetQueryLibTestCase {
 
     RootNode<QueryNode> qnode = new RootNode<QueryNode>(new QueryAddStrat());
     for(Set<Integer> keys: data){
-      qnode.add(mapper.getKeys(keys));
+      qnode.add(mapper.getIndices(keys));
     }
     assertEquals(5, qnode.getDistinctEntries());
 
     RootNode<DataNode> dnode = new RootNode<DataNode>(new DataAddStrat());
     for(Set<Integer> keys: data){
-      dnode.add(mapper.getKeys(keys));
+      dnode.add(mapper.getIndices(keys));
     }
     assertEquals(5, dnode.getDistinctEntries());
 
     RootNode<SupersetNode> snode = new RootNode<SupersetNode>(new SupersetAddStrat());
     for(Set<Integer> keys: data){
-      snode.add(mapper.getKeys(keys));
+      snode.add(mapper.getIndices(keys));
     }
     assertEquals(5, snode.getDistinctEntries());
   }
@@ -146,7 +146,7 @@ public class TestNode extends SetQueryLibTestCase {
     mapper.offerSample(data);
     RootNode<QueryNode> node = new RootNode<QueryNode>(new QueryAddStrat());
     for(Set<Integer> keys: data){
-      if(node.add(mapper.getKeys(keys))){
+      if(node.add(mapper.getIndices(keys))){
       }
     }
     node.writeNodes(mapper, new EmitQueryNode<Integer>(), new ObjectCollector<Pair<Set<Integer>, Long>>() {
@@ -163,7 +163,7 @@ public class TestNode extends SetQueryLibTestCase {
     mapper.offerSample(data);
     RootNode<DataNode> node = new RootNode<DataNode>(new DataAddStrat());
     for(Set<Integer> keys: data){
-      if(node.add(mapper.getKeys(keys))){
+      if(node.add(mapper.getIndices(keys))){
       }
     }
 

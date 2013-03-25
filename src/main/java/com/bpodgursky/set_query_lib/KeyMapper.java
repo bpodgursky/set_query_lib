@@ -24,7 +24,7 @@ public abstract class KeyMapper<K> {
     return values;
   }
 
-  public int[] getKeys(Set<K> values){
+  public int[] getIndices(Set<K> values){
     int[] keys = new int[values.size()];
     int count = 0;
     for(K value: values){

@@ -1,54 +1,32 @@
 package com.bpodgursky.set_query_lib.queriers;
 
+import com.bpodgursky.set_query_lib.node.*;
 import com.google.common.collect.Lists;
 import com.bpodgursky.set_query_lib.IntBitSet;
 import com.bpodgursky.set_query_lib.KeyMapper;
 import com.bpodgursky.set_query_lib.RecordExtractor;
-import com.bpodgursky.set_query_lib.node.RootNode;
-import com.bpodgursky.set_query_lib.node.SupersetAddStrat;
-import com.bpodgursky.set_query_lib.node.SupersetNode;
 
 import java.util.*;
 
-public class SupersetQuerier<T, K> {
-
-  private final RootNode<SupersetNode> data;
-  private final KeyMapper<K> mapper;
+public class SupersetQuerier<T, K> extends TrieQuerier<T, K, SupersetNode>{
 
   public SupersetQuerier(Iterator<T> values,
                          RecordExtractor<T, K> extractor,
                          KeyMapper<K> mapper) {
-
-    this.mapper = mapper;
-    this.data = new RootNode<SupersetNode>(new SupersetAddStrat());
-
-    List<Set<K>> samples = new ArrayList<Set<K>>();
-    while(samples.size() < mapper.getSampleSize() && values.hasNext()){
-      samples.add(extractor.getKeys(values.next()));
-    }
-
-    mapper.offerSample(samples);
-
-    for(Set<K> sample: samples){
-      data.add(mapper.getKeys(sample));
-    }
-
-    while(values.hasNext()){
-      data.add(mapper.getKeys(extractor.getKeys(values.next())));
-    }
+    super(values, extractor, mapper, new SupersetAddStrat());
 	}
 
 	public List<Set<K>> supersetQuery(Set<K> query, int maxMatches) {
 
 	  // Run subset query on all children of the root.
-	  IntBitSet supersetQuery = new IntBitSet(mapper.getKeys(query));
+	  IntBitSet supersetQuery = new IntBitSet(getIndices(query));
 
 	  List<Collection<Integer>> matches = new LinkedList<Collection<Integer>>();
-    matchSuperset(supersetQuery, data.getRoot(), matches, new Stack<Integer>(), maxMatches);
+    matchSuperset(supersetQuery, getRoot(), matches, new Stack<Integer>(), maxMatches);
 
 	  List<Set<K>> matchesReversed = new ArrayList<Set<K>>(matches.size());
 	  for(Collection<Integer> match: matches){
-	  	matchesReversed.add(mapper.getValues(IntBitSet.of(match).getContents()));
+	  	matchesReversed.add(getValues(IntBitSet.of(match).getContents()));
 	  }
 
 	  return matchesReversed;

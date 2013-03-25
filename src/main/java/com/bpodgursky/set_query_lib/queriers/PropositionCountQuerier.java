@@ -10,38 +10,17 @@ import com.bpodgursky.set_query_lib.KeyMapper;
 import com.bpodgursky.set_query_lib.RecordExtractor;
 import com.bpodgursky.set_query_lib.node.DataAddStrat;
 import com.bpodgursky.set_query_lib.node.DataNode;
-import com.bpodgursky.set_query_lib.node.RootNode;
 
 import com.bpodgursky.jbool_expressions.Expression;
 
 import java.util.*;
 
-public class PropositionCountQuerier<T, K> {
-
-  private final RootNode<DataNode> dataRoot;
-  private final KeyMapper<K> mapper;
+public class PropositionCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
 
   public PropositionCountQuerier(Iterator<T> values,
                          RecordExtractor<T, K> extractor,
                          KeyMapper<K> mapper) {
-
-    this.dataRoot = new RootNode<DataNode>(new DataAddStrat());
-    this.mapper = mapper;
-
-    List<Set<K>> samples = new ArrayList<Set<K>>();
-    while(samples.size() < mapper.getSampleSize() && values.hasNext()){
-      samples.add(extractor.getKeys(values.next()));
-    }
-
-    mapper.offerSample(samples);
-
-    for(Set<K> sample: samples){
-      dataRoot.add(mapper.getKeys(sample));
-    }
-
-    while(values.hasNext()){
-      dataRoot.add(mapper.getKeys(extractor.getKeys(values.next())));
-    }
+    super(values, extractor, mapper, new DataAddStrat());
   }
 
   public double findFractionMatch(Expression<K> prop){
@@ -64,7 +43,7 @@ public class PropositionCountQuerier<T, K> {
     int count = 0;
     int[] mapped = new int[variables.size()];
     for(K key: variables){
-      mapped[count++] = mapper.getIndex(key);
+      mapped[count++] = getIndex(key);
     }
     Arrays.sort(mapped);
 
@@ -72,7 +51,7 @@ public class PropositionCountQuerier<T, K> {
     List<Rule<?, K>> rules = RuleSet.simplifyRules();
     rules.add(new Assign<K>(assignMap));
 
-    return countAt(dataRoot.getRoot(), e, mapped, 0, rules, assignMap);
+    return countAt(getRoot(), e, mapped, 0, rules, assignMap);
   }
 
   private long countAt(DataNode node,
@@ -89,13 +68,13 @@ public class PropositionCountQuerier<T, K> {
       int queryVal = allVariables[index];
 
       if(nodeVal > queryVal){
-        assignMap.put(mapper.getValue(queryVal), false);
+        assignMap.put(getValue(queryVal), false);
 
         index++;
       }else if(queryVal > nodeVal){
        i++;
       }else{
-        assignMap.put(mapper.getValue(queryVal), true);
+        assignMap.put(getValue(queryVal), true);
 
         i++;
         index++;

@@ -25,7 +25,7 @@ public class TestQueryTrieConstruction extends QueryTestCase{
     int distinct = 0;
     RootNode<DataNode> dataNode = new RootNode<DataNode>(new DataAddStrat());
     for(Set<Integer> keys: data){
-      if(dataNode.add(mapper.getKeys(keys))){
+      if(dataNode.add(mapper.getIndices(keys))){
         distinct++;
       }
     }

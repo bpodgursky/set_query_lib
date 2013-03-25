@@ -9,43 +9,23 @@ import org.apache.commons.lang.ArrayUtils;
 import java.io.IOException;
 import java.util.*;
 
-public class BatchSubsetCountQuerier<T, K> {
+public class BatchSubsetCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
 
-  private final RootNode<DataNode> dataRoot;
-  private final RootNode<QueryNode> queryRoot;
+  private final TrieBuilder<K, QueryNode> queryBuilder;
 
-  private final KeyMapper<K> mapper;
   private final SubsetQueryExecutor<T, K> executor;
 
   private BatchSubsetCountQuerier(Iterator<T> values,
                                   RecordExtractor<T, K> extractor,
                                   KeyMapper<K> mapper,
                                   SubsetQueryExecutor<T, K> executor) {
-
-    this.dataRoot = new RootNode<DataNode>(new DataAddStrat());
-    this.queryRoot = new RootNode<QueryNode>(new QueryAddStrat());
-
-    this.mapper = mapper;
+    super(values, extractor, mapper, new DataAddStrat());
     this.executor = executor;
-
-    List<Set<K>> samples = new ArrayList<Set<K>>();
-    while (samples.size() < mapper.getSampleSize() && values.hasNext()) {
-      samples.add(extractor.getKeys(values.next()));
-    }
-
-    mapper.offerSample(samples);
-
-    for (Set<K> sample : samples) {
-      dataRoot.add(mapper.getKeys(sample));
-    }
-
-    while (values.hasNext()) {
-      dataRoot.add(mapper.getKeys(extractor.getKeys(values.next())));
-    }
+    this.queryBuilder = new TrieBuilder<K, QueryNode>(new ForwardingMapper<K>(mapper), new QueryAddStrat());
   }
 
   public synchronized void query(Set<K> query) {
-    queryRoot.add(mapper.getKeys(query));
+    queryBuilder.add(query);
   }
 
   public synchronized void query(Iterator<Set<K>> queries) {
@@ -55,11 +35,13 @@ public class BatchSubsetCountQuerier<T, K> {
   }
 
   public synchronized void flushQueries(ObjectCollector<Pair<Set<K>, Long>> output) throws IOException, InterruptedException {
+    RootNode<QueryNode> queryRoot = queryBuilder.makeTrie();
+
     MeasuredCollector<K> collector = new MeasuredCollector<K>(queryRoot.getDistinctEntries(), output);
     this.executor.setQuerier(this);
     for (final QueryNode child : queryRoot.getRoot().getChildren()) {
       this.executor.call(child, new int[]{},
-          new LinkedList<DataNode>(Arrays.<DataNode>asList(dataRoot.getRoot().getChildren())), collector);
+          new LinkedList<DataNode>(Arrays.<DataNode>asList(getRoot().getChildren())), collector);
     }
     collector.getLock().acquire();
   }
@@ -95,12 +77,7 @@ public class BatchSubsetCountQuerier<T, K> {
           cumulativeCount += sn.getCumulativeBelow();
         }
 
-        Set<K> items = new HashSet<K>();
-        for (int value : idCopy) {
-          items.add(mapper.getValue(value));
-        }
-
-        collector.collect(Pair.of(items, cumulativeCount));
+        collector.collect(Pair.of(getValues(idCopy), cumulativeCount));
       }
 
       for (QueryNode sn : currentNode.getChildren()) {
