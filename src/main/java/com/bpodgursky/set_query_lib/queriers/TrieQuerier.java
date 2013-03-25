@@ -42,7 +42,7 @@ public abstract class TrieQuerier<T, K, N extends TrieNode<N>> {
     return mapper.getValue(node);
   }
 
-  public int[] getIndices(Set<K> values){
+  protected int[] getIndices(Set<K> values){
     return mapper.getIndices(values);
   }
 }
