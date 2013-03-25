@@ -11,7 +11,7 @@
   <artifactId>set_query_lib</artifactId>
   <packaging>jar</packaging>
 
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <name>set_query_lib</name>
 
   <description>set_query_lib contains space-efficient data structures for quickly counting records which share common
@@ -31,7 +31,7 @@
   <scm>
     <developerConnection>scm:git:git@github.com:bpodgursky/set_query_lib.git</developerConnection>
     <url>https://github.com/bpodgursky/set_query_lib</url>
-    <tag>set_query_lib-1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <developers>
