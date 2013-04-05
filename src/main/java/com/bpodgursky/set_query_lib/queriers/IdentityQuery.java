@@ -6,12 +6,11 @@ import com.bpodgursky.set_query_lib.KeyMapper;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 
 public class IdentityQuery<K> extends Query<K, K> {
 
   public IdentityQuery(Expression<K> expr, KeyMapper<K> mapper){
-    super(expr, mapper);
+    super(expr, mapper, ExprUtil.getVariables(expr));
   }
 
   public static class IdentityQueryFactory<K> extends Factory<K, K> {
@@ -24,11 +23,6 @@ public class IdentityQuery<K> extends Query<K, K> {
   @Override
   protected State getNewState(Expression<K> expression, int currentIndex) {
     return new IdentityQueryState(expression, currentIndex);
-  }
-
-  @Override
-  protected Set<K> getVariables(Expression<K> query) {
-    return ExprUtil.getVariables(query);
   }
 
   public class IdentityQueryState extends State {

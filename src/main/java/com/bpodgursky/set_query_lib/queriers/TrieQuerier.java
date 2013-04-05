@@ -19,7 +19,10 @@ public abstract class TrieQuerier<T, K, N extends TrieNode<N>> {
     TrieBuilder<K, N> builder = new TrieBuilder<K, N>(mapper, strat);
 
     while(values.hasNext()){
-      builder.add(extractor.getKeys(values.next()));
+      Set<K> keys = extractor.getKeys(values.next());
+      if(!keys.isEmpty()){
+        builder.add(keys);
+      }
     }
 
     this.root = builder.makeTrie();

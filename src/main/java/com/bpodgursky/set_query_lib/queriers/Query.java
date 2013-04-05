@@ -23,9 +23,8 @@ public abstract class Query<K, D> {
     public abstract Query<K, D> query(Expression<D> expr, KeyMapper<K> mapper);
   }
 
-  protected Query(Expression<D> toQuery, KeyMapper<K> mapper){
+  protected Query(Expression<D> toQuery, KeyMapper<K> mapper, Set<K> variables){
     Expression<D> simplified = RuleSet.applyAll(toQuery, SIMPLIFY);
-    Set<K> variables = getVariables(simplified);
 
     int count = 0;
     allVariables = new int[variables.size()];
@@ -89,7 +88,5 @@ public abstract class Query<K, D> {
   }
 
   protected abstract State getNewState(Expression<D> expression, int currentIndex);
-
-  protected abstract Set<K> getVariables(Expression<D> query) throws IOException;
 }
 
