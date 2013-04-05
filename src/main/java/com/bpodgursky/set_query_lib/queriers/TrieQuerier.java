@@ -30,19 +30,7 @@ public abstract class TrieQuerier<T, K, N extends TrieNode<N>> {
     return root.getRoot();
   }
 
-  protected Set<K> getValues(int[] node){
-    return mapper.getValues(node);
-  }
-
-  protected int getIndex(K value){
-    return mapper.getIndex(value);
-  }
-
-  protected K getValue(int node){
-    return mapper.getValue(node);
-  }
-
-  protected int[] getIndices(Set<K> values){
-    return mapper.getIndices(values);
+  protected KeyMapper<K> getMapper(){
+    return mapper;
   }
 }

@@ -19,14 +19,14 @@ public class SupersetQuerier<T, K> extends TrieQuerier<T, K, SupersetNode>{
 	public List<Set<K>> supersetQuery(Set<K> query, int maxMatches) {
 
 	  // Run subset query on all children of the root.
-	  IntBitSet supersetQuery = new IntBitSet(getIndices(query));
+	  IntBitSet supersetQuery = new IntBitSet(getMapper().getIndices(query));
 
-	  List<Collection<Integer>> matches = new LinkedList<Collection<Integer>>();
+	  List<Collection<Integer>> matches = Lists.newLinkedList();
     matchSuperset(supersetQuery, getRoot(), matches, new Stack<Integer>(), maxMatches);
 
 	  List<Set<K>> matchesReversed = new ArrayList<Set<K>>(matches.size());
 	  for(Collection<Integer> match: matches){
-	  	matchesReversed.add(getValues(IntBitSet.of(match).getContents()));
+	  	matchesReversed.add(getMapper().getValues(IntBitSet.of(match).getContents()));
 	  }
 
 	  return matchesReversed;

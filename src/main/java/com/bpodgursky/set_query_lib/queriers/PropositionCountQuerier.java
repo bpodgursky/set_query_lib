@@ -1,11 +1,7 @@
 package com.bpodgursky.set_query_lib.queriers;
 
 import com.bpodgursky.jbool_expressions.And;
-import com.bpodgursky.jbool_expressions.ExprUtil;
 import com.bpodgursky.jbool_expressions.Literal;
-import com.bpodgursky.jbool_expressions.rules.Assign;
-import com.bpodgursky.jbool_expressions.rules.Rule;
-import com.bpodgursky.jbool_expressions.rules.RuleSet;
 import com.bpodgursky.set_query_lib.KeyMapper;
 import com.bpodgursky.set_query_lib.RecordExtractor;
 import com.bpodgursky.set_query_lib.node.DataAddStrat;
@@ -24,85 +20,51 @@ public class PropositionCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
   }
 
   public double findFractionMatch(Expression<K> prop){
-    return findFractionMatch(Literal.<K>getTrue(), prop);
+    return findFractionMatch(prop, new IdentityQuery.IdentityQueryFactory<K>());
+  }
+
+  public double findFractionMatch(Expression<K> filter, Expression<K> prop){
+    return findFractionMatch(filter, prop, new IdentityQuery.IdentityQueryFactory<K>());
+  }
+
+  public <D> double findFractionMatch(Expression<D> prop, Query.Factory<K, D> thing){
+    return findFractionMatch(Literal.<D>getTrue(), prop, thing);
   }
 
   //  of all people who match "expr", what percent match "prop"
-  public double findFractionMatch(Expression<K> filter, Expression<K> prop){
-    long totalMatch = countMatchingRecords(filter);
-    Expression<K> withProp = And.of(filter, prop);
-    long totalWithProp = countMatchingRecords(withProp);
+  public <D> double findFractionMatch(Expression<D> filter, Expression<D> prop, Query.Factory<K, D> factory){
+    long totalMatch = countMatchingRecords(factory.query(filter, getMapper()));
+    Expression<D> withProp = And.of(filter, prop);
+    long totalWithProp = countMatchingRecords(factory.query(withProp, getMapper()));
 
     return ((double) (totalWithProp)) / ((double) totalMatch);
   }
 
-  public long countMatchingRecords(Expression<K> e){
-    Expression<K> toQuery = RuleSet.simplify(e);
-    Set<K> variables = ExprUtil.getVariables(toQuery);
-
-    int count = 0;
-    int[] mapped = new int[variables.size()];
-    for(K key: variables){
-      mapped[count++] = getIndex(key);
-    }
-    Arrays.sort(mapped);
-
-    Map<K, Boolean> assignMap = new HashMap<K, Boolean>();
-    List<Rule<?, K>> rules = RuleSet.simplifyRules();
-    rules.add(new Assign<K>(assignMap));
-
-    return countAt(getRoot(), e, mapped, 0, rules, assignMap);
+  public long countMatchingRecords(Expression<K> expr){
+    return countMatchingRecords(new IdentityQuery<K>(expr, getMapper()));
   }
 
-  private long countAt(DataNode node,
-                       Expression<K> expression,
-                       int[] allVariables, int index,
-                       List<Rule<?, K>> allRules,
-                       Map<K, Boolean> assignMap){
+  public <D> long countMatchingRecords(Query<K, D> factory){
+    return countAt(getRoot(), factory.getInitialState());
+  }
 
-    int[] nodeID = node.getData();
-    int i = 0;
 
-    while(i < nodeID.length && index < allVariables.length){
-      int nodeVal = nodeID[i];
-      int queryVal = allVariables[index];
-
-      if(nodeVal > queryVal){
-        assignMap.put(getValue(queryVal), false);
-
-        index++;
-      }else if(queryVal > nodeVal){
-       i++;
-      }else{
-        assignMap.put(getValue(queryVal), true);
-
-        i++;
-        index++;
-      }
-    }
-
-    if(!assignMap.isEmpty()){
-      expression = RuleSet.applyAll(expression, allRules);
-      assignMap.clear();
-    }
+  private <D> long countAt(DataNode node, Query<K, D>.State queryState){
+    Query<K, D>.State newState = queryState.inform(node.getData(), getMapper());
 
     //  expression cannot resolve true, fail
-    if(expression.equals(Literal.getFalse())){
+    if(newState.getExpression().equals(Literal.getFalse())){
       return 0;
     }
-    //  everything below here is good to go
-    else if(expression.equals(Literal.getTrue())){
-      return node.getCumulativeBelow();
-    }
 
-    //  if we get here, the expression should be resolved one way or another
-    if(index == allVariables.length){
-      throw new RuntimeException("Should have forced a literal assignment!");
+    //  everything below here is good to go
+    else if(newState.getExpression().equals(Literal.getTrue())){
+      return node.getCumulativeBelow();
     }
 
     long childrenCount = 0;
     for(DataNode child: node.getChildren()){
-      childrenCount += countAt(child, expression, allVariables, index, allRules, assignMap);
+      childrenCount += countAt(child, newState);
     }
 
     return childrenCount;

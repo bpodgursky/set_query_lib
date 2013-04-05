@@ -77,7 +77,7 @@ public class BatchSubsetCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
           cumulativeCount += sn.getCumulativeBelow();
         }
 
-        collector.collect(Pair.of(getValues(idCopy), cumulativeCount));
+        collector.collect(Pair.of(getMapper().getValues(idCopy), cumulativeCount));
       }
 
       for (QueryNode sn : currentNode.getChildren()) {
