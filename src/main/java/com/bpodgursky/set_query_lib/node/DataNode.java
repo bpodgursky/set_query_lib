@@ -33,18 +33,7 @@ public class DataNode extends TrieNode<DataNode> {
     return val != 0;
   }
 
-  @Override
-  public String toString() {
-    return "DataNode{" +
-        "allBelow=" + allBelow +
-        ", cumulativeBelow=" + cumulativeBelow +
-        '}';
-  }
-
-  //  package
-
-  protected void setAllBelow(IntBitSet value){
+  public void setAllBelow(IntBitSet value){
     this.allBelow = value;
   }
-
 }

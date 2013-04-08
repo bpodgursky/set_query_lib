@@ -16,6 +16,12 @@ public class RootNode<A extends TrieNode<A>> {
     this.distinctEntries = 0;
   }
 
+  public RootNode(AddStrat<A> strat, A root, long distinctEntries){
+    this.addStrat = strat;
+    this.internalRoot = root;
+    this.distinctEntries = distinctEntries;
+  }
+
   public A getRoot() {
     return internalRoot;
   }

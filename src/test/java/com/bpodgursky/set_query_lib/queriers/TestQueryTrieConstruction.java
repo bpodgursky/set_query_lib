@@ -31,12 +31,10 @@ public class TestQueryTrieConstruction extends QueryTestCase{
     }
 
 		final List<Pair<Set<Integer>, Long>> counts = Lists.newArrayList();
-
     dataNode.writeNodes(mapper, new EmitDataNode<Integer>(), new ObjectCollector<Pair<Set<Integer>, Long>>(){
       public void collectInternal(Pair<Set<Integer>, Long> item) {
         counts.add(item);
-      }}
-    );
+      }});
 
 		assertTrue(counts.contains(Pair.of(set(), 17l)));
 		assertTrue(counts.contains(Pair.of(set(30), 12l)));

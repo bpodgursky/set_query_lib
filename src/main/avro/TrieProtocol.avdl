@@ -1,0 +1,16 @@
+@namespace("com.bpodgursky.set_query_lib.generated")
+protocol TrieProtocol {
+
+  record Node {
+    union { null, long } count;
+    union { null, long } cumulative_count;
+    array<Node> children;
+    array<int> data;
+    array<int> all_below;
+  }
+
+  record DataRoot {
+    Node root;
+    long distinct;
+  }
+}

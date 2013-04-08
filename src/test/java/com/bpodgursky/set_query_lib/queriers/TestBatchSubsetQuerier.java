@@ -1,9 +1,9 @@
 package com.bpodgursky.set_query_lib.queriers;
 
-import org.junit.Test;
 import com.bpodgursky.set_query_lib.Pair;
 import com.bpodgursky.set_query_lib.SampleFrequencyOrderedMapper;
 import com.bpodgursky.set_query_lib.collector.CollectionCollector;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -34,6 +34,7 @@ public class TestBatchSubsetQuerier extends QueryTestCase {
     assertTrue(counts.contains(Pair.of(set(30, 50), 2l)));
     assertTrue(counts.contains(Pair.of(set(10), 11l)));
     assertTrue(counts.contains(Pair.of(set(10, 20), 4l)));
+
   }
 
 }

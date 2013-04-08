@@ -68,36 +68,6 @@
     </dependency>
 
     <dependency>
-      <groupId>org.ow2.sat4j</groupId>
-      <artifactId>org.ow2.sat4j.core</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.sat4j</groupId>
-      <artifactId>org.ow2.sat4j.sat</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.sat4j</groupId>
-      <artifactId>org.ow2.sat4j.pb</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.sat4j</groupId>
-      <artifactId>org.ow2.sat4j.maxsat</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.ow2.sat4j</groupId>
-      <artifactId>org.ow2.sat4j.csp</artifactId>
-      <version>2.3.3</version>
-    </dependency>
-
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-jexl</artifactId>
       <version>2.1.1</version>
@@ -115,10 +85,30 @@
       <version>1.2-SNAPSHOT</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.avro</groupId>
+      <artifactId>avro</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.avro</groupId>
+        <artifactId>avro-maven-plugin</artifactId>
+        <version>1.7.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>idl-protocol</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
