@@ -45,7 +45,7 @@ public class PropositionCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
   }
 
   public <D> long countMatchingRecords(Query<K, D> factory){
-    return countAt(getRoot(), factory.getInitialState());
+    return countAt(getRoot().getRoot(), factory.getInitialState());
   }
 
 

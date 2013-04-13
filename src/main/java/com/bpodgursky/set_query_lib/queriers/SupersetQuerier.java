@@ -22,7 +22,7 @@ public class SupersetQuerier<T, K> extends TrieQuerier<T, K, SupersetNode>{
 	  IntBitSet supersetQuery = new IntBitSet(getMapper().getIndices(query));
 
 	  List<Collection<Integer>> matches = Lists.newLinkedList();
-    matchSuperset(supersetQuery, getRoot(), matches, new Stack<Integer>(), maxMatches);
+    matchSuperset(supersetQuery, getRoot().getRoot(), matches, new Stack<Integer>(), maxMatches);
 
 	  List<Set<K>> matchesReversed = new ArrayList<Set<K>>(matches.size());
 	  for(Collection<Integer> match: matches){

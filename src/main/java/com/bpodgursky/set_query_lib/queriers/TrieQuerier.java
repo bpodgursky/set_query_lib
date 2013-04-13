@@ -29,8 +29,8 @@ public abstract class TrieQuerier<T, K, N extends TrieNode<N>> {
     this.mapper = mapper;
   }
 
-  protected N getRoot(){
-    return root.getRoot();
+  public RootNode<N> getRoot(){
+    return root;
   }
 
   protected KeyMapper<K> getMapper(){

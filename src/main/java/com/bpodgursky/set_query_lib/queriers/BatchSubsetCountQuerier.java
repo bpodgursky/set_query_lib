@@ -41,7 +41,7 @@ public class BatchSubsetCountQuerier<T, K> extends TrieQuerier<T, K, DataNode> {
     this.executor.setQuerier(this);
     for (final QueryNode child : queryRoot.getRoot().getChildren()) {
       this.executor.call(child, new int[]{},
-          new LinkedList<DataNode>(Arrays.<DataNode>asList(getRoot().getChildren())), collector);
+          new LinkedList<DataNode>(Arrays.<DataNode>asList(getRoot().getRoot().getChildren())), collector);
     }
     collector.getLock().acquire();
   }
